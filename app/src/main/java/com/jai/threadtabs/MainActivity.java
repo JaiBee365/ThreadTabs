@@ -258,12 +258,12 @@ public class MainActivity extends Activity {
         }));
     }
     private void requestSmsPermissions(){
-        List<String> missing=new ArrayList<>();for(String p:new String[]{Manifest.permission.READ_SMS,Manifest.permission.RECEIVE_SMS,Manifest.permission.SEND_SMS,Manifest.permission.WRITE_SMS})if(checkSelfPermission(p)!=PackageManager.PERMISSION_GRANTED)missing.add(p);
+        List<String> missing=new ArrayList<>();for(String p:new String[]{Manifest.permission.READ_SMS,Manifest.permission.RECEIVE_SMS,Manifest.permission.SEND_SMS})if(checkSelfPermission(p)!=PackageManager.PERMISSION_GRANTED)missing.add(p);
         if(missing.isEmpty()){if(!pendingSendAddress.isEmpty()){String a=pendingSendAddress,b=pendingSendBody;pendingSendAddress="";pendingSendBody="";sendSms(a,b,null);}else changeMode("live");return;}
         requestPermissions(missing.toArray(new String[0]),REQUEST_SMS_PERMISSIONS);
     }
     private void requestDefaultSms(){
-        if(Build.VERSION.SDK_INT>=29){RoleManager roles=getSystemService(RoleManager.class);if(roles!=null&&roles.isRoleAvailable(RoleManager.ROLE_SMS)&&!roles.isRoleHeldBySelf())startActivityForResult(roles.createRequestRoleIntent(RoleManager.ROLE_SMS),REQUEST_DEFAULT_SMS);else toast("Android does not offer the SMS role on this device.");}
+        if(Build.VERSION.SDK_INT>=29){RoleManager roles=getSystemService(RoleManager.class);if(roles!=null&&roles.isRoleAvailable(RoleManager.ROLE_SMS)&&!roles.isRoleHeld(RoleManager.ROLE_SMS))startActivityForResult(roles.createRequestRoleIntent(RoleManager.ROLE_SMS),REQUEST_DEFAULT_SMS);else toast("Android does not offer the SMS role on this device.");}
         else {Intent change=new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT).putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME,getPackageName());startActivityForResult(change,REQUEST_DEFAULT_SMS);}
     }
     private void defaultSmsSettings(){if(isDefaultSms())requestSmsPermissions();else requestDefaultSms();}
